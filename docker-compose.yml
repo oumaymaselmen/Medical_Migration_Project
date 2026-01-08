@@ -1,0 +1,21 @@
+services:
+  # Le service de la base de données
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_container
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo_data:/data/db # Volume pour que les données médicales restent enregistrées
+
+  # Le service qui lance ton script de migration
+  migration:
+    build: . # Docker va utiliser ton Dockerfile pour construire cette image
+    container_name: migration_script_container
+    depends_on:
+      - mongodb # On attend que la base soit lancée avant de démarrer le script
+    volumes:
+      - .:/app # Permet de lier ton dossier actuel au dossier /app du conteneur
+
+volumes:
+  mongo_data: # Déclaration du volume persistant
